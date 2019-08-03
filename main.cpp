@@ -117,13 +117,13 @@ void MakeARPSpoofingpacket(u_char *packet, MACIP *body){
 
     return;
 };
-int GetattkIPAddress(u_int8_t *att_ip){
+int GetattkIPAddress(u_int8_t *att_ip, char *ar){
     struct ifreq ifr;
         char ipstr[40];
         int s;
 
         s = socket(AF_INET, SOCK_DGRAM, 0);
-        strncpy(ifr.ifr_name, "ens33", IFNAMSIZ);
+        strncpy(ifr.ifr_name, ar, IFNAMSIZ);
 
         if (ioctl(s, SIOCGIFADDR, &ifr) < 0) {
             printf("Error");
@@ -141,6 +141,7 @@ int GetattkMacAddress(u_int8_t *att_mac)
  struct ifreq *ifr; // Interface request
  struct ifconf ifc;
  int i, numif;
+ char tmp[100];
 
  memset(&ifc, 0, sizeof(ifc));
  ifc.ifc_ifcu.ifcu_req = NULL;
@@ -255,7 +256,7 @@ int main(int argc, char* argv[]) {
   GetattkMacAddress(body.att_mac);
   printf("[*]  Attacker's MAC:        ");
   print_MAC(body.att_mac);
-  GetattkIPAddress(body.att_ip);
+  GetattkIPAddress(body.att_ip, argv[1]);
   printf("[*]  Attacker's IP:         ");
   print_ip(body.att_ip);
   chrtoIP(body.sender_ip, argv[2]);
